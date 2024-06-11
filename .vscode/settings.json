@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "vector": "cpp",
+        "random": "cpp",
+        "mutex": "cpp"
+    }
+}

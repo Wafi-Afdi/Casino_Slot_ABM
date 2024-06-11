@@ -1,6 +1,9 @@
 #pragma once
 
 #include "SFML/Graphics.hpp"
+#include <random>
+
+#define _PROBABILITY_WIN_SLOT 0.001
 
 class Slot {
     private:
@@ -48,7 +51,6 @@ class Slot {
 
 class Casino_Manager {
     private:
-        long int profit;
         long int revenue;
         long int loss;
         long int total_player;
@@ -56,7 +58,6 @@ class Casino_Manager {
 
     public:
         Casino_Manager() {
-            profit = 0;
             revenue = 0;
             loss = 0;
             total_player = 0;
@@ -77,6 +78,29 @@ class Casino_Manager {
 
         void add_game() {
             total_game += 1;
+        }
+
+        long int get_revenue() {
+            return revenue - loss;
+        }
+
+        bool random_win_probability() {
+            // Create a random device
+            std::random_device rd;
+
+            // Initialize a Mersenne Twister random number generator
+            std::mt19937 gen(rd());
+
+            // Define a uniform real distribution from 0 to 1
+            std::uniform_real_distribution<> dis(0.0, 1.0);
+
+            // Generate a random number
+            float random_number = dis(gen);
+            if(random_number < _PROBABILITY_WIN_SLOT) {
+                return true;
+            } else {
+                return false;
+            }
         }
     
 };
