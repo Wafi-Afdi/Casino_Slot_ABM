@@ -9,15 +9,33 @@ struct PlayerObject{
 	sf::CircleShape circle;
 };
 
+struct Legend {
+	sf::CircleShape circle_stop;
+	sf::CircleShape circle_broke;
+	sf::Text text_broke;
+	sf::Text text_stop;
+};
+
+struct Stats {
+	sf::Text text_revenue;
+	sf::Text text_loss;
+	sf::Text text_total_game;
+	sf::Text text_profit;
+	sf::Text time_elapsed;
+
+};
+
 class Gui : public sf::RenderWindow {
 	private:
 		bool slot[4];
 
 		sf::RectangleShape square[4];
-		sf::Sprite slotSprite [4];
+		sf::Sprite slotSprite[4];
 
 		std::vector<PlayerObject> po_vector;
 		std::vector<sf::Text*> text_vector;
+
+		sf::Clock clock;
 
 		void setup();
 		void update();
@@ -27,13 +45,20 @@ class Gui : public sf::RenderWindow {
 		void drawSlot();
 		void drawText();
 		void drawPlayer();
+		void drawLegend();
 		void drawStats();
 		void result(std::vector<PlayerObject>::iterator&);
+		void setup_stats();
 
 		sf::Font font;
 		sf::Texture slotTexture;
 
 		Casino_Manager casino_manager;
+
+		Legend legend_ui;
+		Stats stats_ui;
+
+		
 
 	public:
 		Gui(const char*);
@@ -44,4 +69,5 @@ class Gui : public sf::RenderWindow {
 		static float getTargetY();
 		static float getXExit();
 		static float getYExit();
+
 };

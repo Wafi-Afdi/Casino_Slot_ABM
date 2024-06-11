@@ -17,6 +17,8 @@ void Gui::mainloop() {
         this->drawSlot();
         this->drawPlayer();
         this->drawText();
+        this->drawLegend();
+        this->drawStats();
 
         this->display();
     }

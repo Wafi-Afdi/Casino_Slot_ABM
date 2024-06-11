@@ -23,19 +23,27 @@ Player::Player(int index, float x_spawn, float y_spawn, float x_slot, float y_sl
 	y_spawn_m{y_spawn},
 	x_stop{false},
 	y_stop{false},
-	player_state{TOSLOT}
+	player_state{TOSLOT},
+	agent_stop{false},
+	out_of_money{false}
 {
 	// Create a random device
-    std::random_device rd;
-    
-    // Initialize a Mersenne Twister random number generator
-    std::mt19937 gen(rd());
-    
-    // Define a normal distribution with mean 0 and standard deviation 1
-    std::normal_distribution<> dis(_MEAN, _STD);
-    
-    // Generate a random number
-    this->money = dis(gen);
+	std::random_device rd;
+	// Initialize a Mersenne Twister random number generator
+	std::mt19937 gen(rd());
+	std::normal_distribution<> norm_dis(_MEAN, _STD);
+
+	// Generate a random number
+	this->money = (int)norm_dis(gen);
+	//printf("MONEY : %i\n", this->money);
+
+	std::uniform_real_distribution<> uni_dis(0.0, 0.2);
+	this->probability_stop = (float)uni_dis(gen);
+	//printf("PROB STOP : %f\n", this->probability_stop);
+
+	std::uniform_real_distribution<> uni_dis2(-0.05, 0.05);
+	this->win_increment_probability = (float)uni_dis2(gen);
+	this->loss_increment_probability = (float)uni_dis2(gen);
 }
 
 int Player::getSlot() {
@@ -146,19 +154,47 @@ void Player::exit() {
 	this->last_time = std::chrono::high_resolution_clock::now();
 }
 
-bool Player::nextGame() {
-	player_count++;
-
-	if (player_count < 3) {
-		return true;
+bool Player::nextGame(Casino_Manager& casino_manager) {
+	if (this->money - casino_manager.getSlotPrice() < 0) {
+		out_of_money = true;
+		return false;
 	}
+	bool canPlay = this->canPlayAgain();
 
-	return false;
+	return canPlay;
 }
 
-void Player::play(Casino_Manager &casino_manager) {
+void Player::play(Casino_Manager& casino_manager) {
 	this->player_state = PLAYING;
-	this->last_result = casino_manager.random_win_probability();
+	
+	casino_manager.add_game();
+	this->money -= casino_manager.getSlotPrice();
+	casino_manager.add_revenue(casino_manager.getSlotPrice());
+
+	this->last_result =	casino_manager.random_win_probability();
+
+	if (this->last_result) {
+		this->probability_stop += win_increment_probability;
+		if (this->probability_stop > 1) {
+			this->probability_stop = 1;
+		}
+		else if (this->probability_stop < 0) {
+			this->probability_stop = 0;
+		}
+
+		// nambahin duit agen dan nambah loss di kasino
+		this->money += casino_manager.getSlotCashout();
+		casino_manager.add_loss(casino_manager.getSlotCashout());
+	}
+	else {
+		this->probability_stop += loss_increment_probability;
+		if (this->probability_stop > 1) {
+			this->probability_stop = 1;
+		}
+		else if (this->probability_stop < 0) {
+			this->probability_stop = 0;
+		}
+	}
 
 	last_time = std::chrono::high_resolution_clock::now();
 }
@@ -174,4 +210,20 @@ void Player::check() {
 
 bool Player::lastResult() {
 	return this->last_result;
+}
+
+bool Player::canPlayAgain() {
+	// Create a random device
+	std::random_device rd;
+	// Initialize a Mersenne Twister random number generator
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> uni_dis(0.0, 1.0);
+	float random_number = (float)uni_dis(gen);
+	if (random_number < this->probability_stop) {
+		agent_stop = true;
+		return false;
+	}
+	else {
+		return true;
+	}
 }

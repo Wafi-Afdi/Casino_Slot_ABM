@@ -19,7 +19,6 @@ void Gui::update() {
                     circle
                 }
             );
-            this->casino_manager.add_player();
 
             slot[i] = true;
         }
@@ -35,26 +34,26 @@ void Gui::update() {
         else {
 
             switch (it->player->getState()) {
-                case TOSLOT:
-                    it->circle.setPosition(sf::Vector2f(it->player->getXToSlot(), it->player->getYToSlot()));
-                    break;
+            case TOSLOT:
+                it->circle.setPosition(sf::Vector2f(it->player->getXToSlot(), it->player->getYToSlot()));
+                break;
 
-                case ONSLOT:
-                    it->player->play(casino_manager);
-                    break;
+            case ONSLOT:
+                it->player->play(casino_manager);
+                break;
 
-                case PLAYING:
-                    it->player->check();
-                    break;
+            case PLAYING:
+                it->player->check();
+                break;
 
-                case RESULT:
-                    this->result(it);
-                    break;
+            case RESULT:
+                this->result(it);
+                break;
 
-                case EXIT:
-                    it->circle.setPosition(sf::Vector2f(it->player->getXToExit(), it->player->getYToExit()));
-                    break;
-                }
+            case EXIT:
+                it->circle.setPosition(sf::Vector2f(it->player->getXToExit(), it->player->getYToExit()));
+                break;
+            }
 
 
             ++it;

@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include "gui.h"
+#include "Game_Manager/gui.h"
 
 int main() {
     std::srand(std::time(0));

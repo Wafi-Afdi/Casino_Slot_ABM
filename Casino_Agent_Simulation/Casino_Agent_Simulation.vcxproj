@@ -139,9 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gui.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainloop.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="update.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Casino\house_casino.h" />
+    <ClInclude Include="include\Casino\player.h" />
+    <ClInclude Include="include\Game_Manager\gui.h" />
     <ClInclude Include="include\SFML\Audio.hpp" />
     <ClInclude Include="include\SFML\Config.hpp" />
     <ClInclude Include="include\SFML\GpuPreference.hpp" />
@@ -151,6 +158,12 @@
     <ClInclude Include="include\SFML\OpenGL.hpp" />
     <ClInclude Include="include\SFML\System.hpp" />
     <ClInclude Include="include\SFML\Window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="BrownieStencil-8O8MJ.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="slot-machine-3.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
