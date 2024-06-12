@@ -15,7 +15,7 @@ enum PlayerState {
 
 class Player {
 private:
-    bool last_result = false;
+    int last_result = 0;
 
     bool x_stop;
     bool y_stop;

@@ -264,18 +264,22 @@ void Gui::setup_stats() {
     stats_ui.text_revenue.setFont(font);
     stats_ui.text_total_game.setFont(font);
     stats_ui.time_elapsed.setFont(font);
+    stats_ui.text_house_edge.setFont(font);
+
 
     stats_ui.text_loss.setFillColor(sf::Color::Black);
     stats_ui.text_profit.setFillColor(sf::Color::Black);
     stats_ui.text_revenue.setFillColor(sf::Color::Black);
     stats_ui.text_total_game.setFillColor(sf::Color::Black);
     stats_ui.time_elapsed.setFillColor(sf::Color::Black);
+    stats_ui.text_house_edge.setFillColor(sf::Color::Black);
 
     stats_ui.text_loss.setCharacterSize(12);
     stats_ui.text_profit.setCharacterSize(12);
     stats_ui.text_revenue.setCharacterSize(12);
     stats_ui.text_total_game.setCharacterSize(12);
     stats_ui.time_elapsed.setCharacterSize(12);
+    stats_ui.text_house_edge.setCharacterSize(12);
 
     // TODO BIKIN STRINGNYA
     stats_ui.text_loss.setString("TEXTSFSFOKFDKSJ");
@@ -296,17 +300,20 @@ void Gui::setup_stats() {
     text_post.y += 15;
     stats_ui.text_total_game.setPosition(text_post);
 
+    text_post.y += 15;
+    stats_ui.text_house_edge.setPosition(text_post);
+
     sf::Vector2f time_post = sf::Vector2f(550, 10);
     stats_ui.time_elapsed.setPosition(time_post);
 }
 
 void Gui::drawStats() {
-    float elapsedTime = clock.getElapsedTime().asSeconds();
-    stats_ui.time_elapsed.setString("Time : " + formatTime(elapsedTime));
+    stats_ui.time_elapsed.setString("Time : " + formatTime(time_passed));
     stats_ui.text_revenue.setString("Revenue : " + std::to_string(casino_manager.get_revenue()));
     stats_ui.text_loss.setString("Loss : " + std::to_string(casino_manager.get_loss()));
     stats_ui.text_profit.setString("Profit : " + std::to_string(casino_manager.get_profit()));
     stats_ui.text_total_game.setString("Total Game : " + std::to_string(casino_manager.get_total()));
+    stats_ui.text_house_edge.setString("House Edge Game : " + std::to_string(((float)casino_manager.get_profit() / casino_manager.get_revenue()) * 100.0 ));
 
 
     this->draw(stats_ui.text_revenue);
@@ -314,5 +321,6 @@ void Gui::drawStats() {
     this->draw(stats_ui.text_profit);
     this->draw(stats_ui.text_total_game);
     this->draw(stats_ui.time_elapsed);
+    this->draw(stats_ui.text_house_edge);
 
 }

@@ -144,6 +144,7 @@
     <ClCompile Include="mainloop.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="update.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Casino\house_casino.h" />

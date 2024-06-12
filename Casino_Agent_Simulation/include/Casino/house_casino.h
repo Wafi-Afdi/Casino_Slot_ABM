@@ -2,52 +2,9 @@
 
 #include "SFML/Graphics.hpp"
 #include <random>
+#include <map>
 
 #define _PROBABILITY_WIN_SLOT 0.001
-
-//class Slot {
-//    private:
-//        sf::Vector2f pos;
-//        sf::Vector2f play_pos;
-//
-//        float win_probability;
-//        
-//        long int harga_main;
-//        long int total_game;
-//        long int prize;
-//        long int total_player;
-//        long int total_revenue;   
-//
-//        sf::Time game_time;
-//        sf::Time time_left;
-//
-//
-//        // Player* player_lagi_main;
-//
-//    public:
-//        Slot() {
-//
-//        };  
-//        Slot(float harga_main, float win_probability, sf::Time game_time) {
-//            this->harga_main = harga_main;
-//            this->win_probability = win_probability;
-//            this->game_time = sf::seconds(0.0f);
-//        }
-//
-//        void set_pos(sf::Vector2f pos) {
-//            this->pos = pos;
-//            this->play_pos = sf::Vector2f(pos.x, pos.y + 15);
-//        }
-//
-//        void set_player() {
-//
-//        }
-//
-//
-//
-//
-//};
-
 
 class Casino_Manager {
 private:
@@ -64,7 +21,7 @@ public:
         loss = 0;
         total_player = 0;
         total_game = 0;
-        slotPrice = 50;
+        slotPrice = 10;
         slotCashout = 100;
     }
 
@@ -93,7 +50,17 @@ public:
         return this->revenue;
     }
 
-    bool random_win_probability() {
+    std::vector<int> LReel = { 1,1,3,4,5,2,2,3,4,2,2,5,3,5,3,4,2,1,2,5,4,3 };
+    std::vector<int> CReel = { 3,1,2,2,3,5,4,4,2,2,3,2,1,5,4,3,3,2,1,5,4,1 };
+    std::vector<int> RReel = { 2,3,5,4,4,3,1,1,2,2,3,5,4,3,2,1,2,1,5,1,3,4 };
+
+    std::map<int, int> Winner = {
+        {111,2}, {222,7}, {333, 10}, {331, 2}, {332, 2},
+        {334, 3}, {335, 4}, {444, 15}, {441,5}, {442, 5},
+        {443, 2}, {445, 6}, {123, 2}, {551, 2}, {555, 70}
+    };
+
+    int random_win_probability() {
         // Create a random device
         std::random_device rd;
 
@@ -101,16 +68,17 @@ public:
         std::mt19937 gen(rd());
 
         // Define a uniform real distribution from 0 to 1
-        std::uniform_real_distribution<> dis(0.0, 1.0);
+        std::uniform_real_distribution<> dis(0, ((float)LReel.size()) - 1);
 
         // Generate a random number
-        float random_number = (float)dis(gen);
-        if (random_number < _PROBABILITY_WIN_SLOT) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        int left_index = (int)dis(gen);
+        int middle_index = (int)dis(gen);
+        int right_index = (int)dis(gen);
+
+        int real_pos = LReel[left_index] * 100 + CReel[middle_index] * 10 + RReel[right_index];
+        loss += Winner[real_pos] * 10;
+        printf("NUMBER REEL : %i\n", real_pos);
+        return Winner[real_pos] * 10;
     }
 
     int getSlotCashout() {

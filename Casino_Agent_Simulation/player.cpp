@@ -4,13 +4,14 @@
 #include <random>
 
 #include "Casino/player.h"
+#include "Game_Manager/utils.h"
 
 
 #define _SPEED_X 0.5f
 #define _SPEED_Y 0.5f
 
-#define _MEAN 750
-#define _STD 400
+#define _MEAN 250
+#define _STD 100
 
 Player::Player(int index, float x_spawn, float y_spawn, float x_slot, float y_slot, float x_exit, float y_exit) :
 	last_time{ std::chrono::high_resolution_clock::now() },
@@ -37,13 +38,14 @@ Player::Player(int index, float x_spawn, float y_spawn, float x_slot, float y_sl
 	this->money = (int)norm_dis(gen);
 	//printf("MONEY : %i\n", this->money);
 
-	std::uniform_real_distribution<> uni_dis(0.0, 0.2);
+	std::uniform_real_distribution<> uni_dis(0.0, 0.1);
 	this->probability_stop = (float)uni_dis(gen);
 	//printf("PROB STOP : %f\n", this->probability_stop);
 
-	std::uniform_real_distribution<> uni_dis2(-0.05, 0.05);
+	std::uniform_real_distribution<> uni_dis2(0.05, 0.5);
+	std::uniform_real_distribution<> uni_dis3(-0.02, 0.02);
 	this->win_increment_probability = (float)uni_dis2(gen);
-	this->loss_increment_probability = (float)uni_dis2(gen);
+	this->loss_increment_probability = (float)uni_dis3(gen);
 }
 
 int Player::getSlot() {
@@ -59,7 +61,7 @@ float Player::getXToSlot() {
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->last_time).count();
 
 	float duration_float = static_cast<float>(duration);
-	float increment = duration_float * _SPEED_X;
+	float increment = duration_float * _SPEED_X * sim_utils::get_game_speed();
 
 	float currentX = x_spawn_m + increment;
 
@@ -81,7 +83,7 @@ float Player::getYToSlot() {
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->last_time).count();
 
 	float duration_float = static_cast<float>(duration);
-	float increment = duration_float * _SPEED_Y;
+	float increment = duration_float * _SPEED_Y * sim_utils::get_game_speed();
 
 	float currentY = y_spawn_m - increment;
 
@@ -101,7 +103,7 @@ float Player::getXToExit() {
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->last_time).count();
 
 	float duration_float = static_cast<float>(duration);
-	float increment = duration_float * _SPEED_Y;
+	float increment = duration_float * _SPEED_Y * sim_utils::get_game_speed();
 
 	float currentX = x_target_slot + increment;
 
@@ -123,7 +125,7 @@ float Player::getYToExit() {
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->last_time).count();
 
 	float duration_float = static_cast<float>(duration);
-	float increment = duration_float * _SPEED_X;
+	float increment = duration_float * _SPEED_X * sim_utils::get_game_speed();
 
 	float currentY = this->y_target_slot + increment;
 
@@ -173,7 +175,7 @@ void Player::play(Casino_Manager& casino_manager) {
 
 	this->last_result =	casino_manager.random_win_probability();
 
-	if (this->last_result) {
+	if (this->last_result > 0) {
 		this->probability_stop += win_increment_probability;
 		if (this->probability_stop > 1) {
 			this->probability_stop = 1;
@@ -183,8 +185,8 @@ void Player::play(Casino_Manager& casino_manager) {
 		}
 
 		// nambahin duit agen dan nambah loss di kasino
-		this->money += casino_manager.getSlotCashout();
-		casino_manager.add_loss(casino_manager.getSlotCashout());
+		this->money += last_result;
+		//casino_manager.add_loss(last_result);
 	}
 	else {
 		this->probability_stop += loss_increment_probability;
@@ -203,7 +205,7 @@ void Player::check() {
 	auto now = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->last_time).count();
 
-	if (duration > 2000) {
+	if (duration > 2000 / sim_utils::get_game_speed()) {
 		this->player_state = RESULT;
 	}
 }

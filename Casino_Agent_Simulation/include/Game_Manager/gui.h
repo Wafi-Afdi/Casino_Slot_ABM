@@ -4,6 +4,7 @@
 #include "Casino/player.h"
 #include "Casino/house_casino.h"
 
+
 struct PlayerObject{
 	Player* player;
 	sf::CircleShape circle;
@@ -22,7 +23,7 @@ struct Stats {
 	sf::Text text_total_game;
 	sf::Text text_profit;
 	sf::Text time_elapsed;
-
+	sf::Text text_house_edge;
 };
 
 class Gui : public sf::RenderWindow {
@@ -36,6 +37,8 @@ class Gui : public sf::RenderWindow {
 		std::vector<sf::Text*> text_vector;
 
 		sf::Clock clock;
+		float time_passed = 0.0;
+		
 
 		void setup();
 		void update();
