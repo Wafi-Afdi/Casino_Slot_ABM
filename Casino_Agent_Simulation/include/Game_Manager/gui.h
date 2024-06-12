@@ -26,6 +26,12 @@ struct Stats {
 	sf::Text text_house_edge;
 };
 
+struct TextPos {
+	sf::Text* text;
+	float posx;
+	float posy;
+};
+
 class Gui : public sf::RenderWindow {
 	private:
 		bool slot[4];
@@ -35,8 +41,10 @@ class Gui : public sf::RenderWindow {
 
 		std::vector<PlayerObject> po_vector;
 		std::vector<sf::Text*> text_vector;
+		std::vector<TextPos> text_pos_vector;
 
 		sf::Clock clock;
+		sf::Time dt;
 		float time_passed = 0.0;
 		
 

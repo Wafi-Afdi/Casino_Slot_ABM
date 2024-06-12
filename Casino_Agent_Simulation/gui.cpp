@@ -3,11 +3,12 @@
 #include <cstdlib>
 #include <mutex>
 #include "Game_Manager/gui.h"
+#include "Game_Manager/utils.h"
 
 #define _HORIZONTAL_WINDOW 800
 #define _VERTICAL_WINDOW 600
 
-#define _VERTICAL_SLOT 125.0f
+#define _VERTICAL_SLOT 150.0f
 #define _PLAYER_STOP_INCREMENT 50.0f
 
 std::mutex mu;
@@ -194,13 +195,13 @@ void Gui::winLabel(int index, int result) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
     float duration_float = static_cast<float>(duration);
 
-    while (duration_float < 1000) {
-
+    float currentY = y;
+    while ( currentY > -100 ) {
         now = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
         duration_float = static_cast<float>(duration);
 
-        float currentY = y - duration_float * 0.2f;
+        currentY = y - duration_float * 0.2f * sim_utils::get_game_speed();
 
         text->setPosition(x, currentY);
     }
@@ -233,21 +234,24 @@ void Gui::loseLabel(int index) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
     float duration_float = static_cast<float>(duration);
 
-    while (duration_float < 1000) {
+    float currentY = y;
+    while (currentY > -100) {
 
         now = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
         duration_float = static_cast<float>(duration);
 
-        float currentY = y - duration_float * 0.2f;
+        currentY = y - duration_float * 0.2f * sim_utils::get_game_speed();
 
         text->setPosition(x, currentY);
     }
 
+    mu.lock();
     auto it = std::find(this->text_vector.begin(), this->text_vector.end(), text);
     if (it != this->text_vector.end()) {
         this->text_vector.erase(it);
     }
+    mu.unlock();
 }
 
 void Gui::drawLegend() {
