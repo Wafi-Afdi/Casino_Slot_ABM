@@ -11,8 +11,32 @@ void Gui::mainloop() {
         sf::Event event;
         while (this->pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+
+            switch (event.type)
+            {
+                // window closed
+            case sf::Event::Closed:
                 this->close();
+                break;
+
+                // key pressed
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::Num1) {
+                    sim_utils::game_speed = 1;
+                }
+                if (event.key.code == sf::Keyboard::Num2) {
+                    sim_utils::game_speed = 5;
+                }
+                if (event.key.code == sf::Keyboard::Num3) {
+                    sim_utils::game_speed = 10;
+                }
+                break;
+
+                // we don't process other types of events
+            default:
+                break;
+            }
+
         }
         
         this->update();
