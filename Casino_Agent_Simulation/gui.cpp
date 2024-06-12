@@ -7,7 +7,7 @@
 #define _HORIZONTAL_WINDOW 800
 #define _VERTICAL_WINDOW 600
 
-#define _VERTICAL_SLOT 100.0f
+#define _VERTICAL_SLOT 125.0f
 #define _PLAYER_STOP_INCREMENT 50.0f
 
 std::mutex mu;
@@ -152,7 +152,7 @@ float Gui::getYExit() {
 }
 
 void Gui::result(std::vector<PlayerObject>::iterator& it) {
-    bool result = it->player->lastResult();
+    int result = it->player->lastResult();
     this->resultLabel(result, it->player->getSlot());
 
     bool play = it->player->nextGame(casino_manager);
@@ -165,9 +165,9 @@ void Gui::result(std::vector<PlayerObject>::iterator& it) {
     }
 }
 
-void Gui::resultLabel(bool win, int index) {
+void Gui::resultLabel(int win, int index) {
     if (win) {
-        std::thread t(&Gui::winLabel, this, index);
+        std::thread t(&Gui::winLabel, this, index, win);
         t.detach();
     }
     else {
@@ -176,10 +176,10 @@ void Gui::resultLabel(bool win, int index) {
     }
 }
 
-void Gui::winLabel(int index) {
+void Gui::winLabel(int index, int result) {
     sf::Text* text = new sf::Text;
     text->setFont(this->font);
-    text->setString("+100");
+    text->setString("+" + std::to_string(result));
     text->setCharacterSize(24);
     text->setFillColor(sf::Color::Green);
 
@@ -218,7 +218,7 @@ void Gui::loseLabel(int index) {
     sf::Text* text = new sf::Text;
 
     text->setFont(this->font);
-    text->setString("-100");
+    text->setString("LOSS");
     text->setCharacterSize(24);
     text->setFillColor(sf::Color::Red);
 

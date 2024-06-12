@@ -42,9 +42,9 @@ class Gui : public sf::RenderWindow {
 
 		void setup();
 		void update();
-		void winLabel(int index);
+		void winLabel(int index, int result);
 		void loseLabel(int index);
-		void resultLabel(bool win, int index);
+		void resultLabel(int win, int index);
 		void drawSlot();
 		void drawText();
 		void drawPlayer();

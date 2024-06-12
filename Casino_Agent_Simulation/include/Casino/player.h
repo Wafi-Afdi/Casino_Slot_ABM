@@ -56,7 +56,7 @@ public:
     void back();
     void check();
 
-    bool lastResult();
+    int lastResult();
     bool nextGame(Casino_Manager& casino_manager);
 
     int getSlot();

@@ -210,7 +210,7 @@ void Player::check() {
 	}
 }
 
-bool Player::lastResult() {
+int Player::lastResult() {
 	return this->last_result;
 }
 

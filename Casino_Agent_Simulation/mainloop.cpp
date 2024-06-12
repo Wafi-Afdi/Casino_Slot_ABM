@@ -7,6 +7,7 @@ void Gui::mainloop() {
     {        
         sf::Time dt = deltaClock.restart();
         this->time_passed += dt.asSeconds() * sim_utils::get_game_speed(); 
+
         sf::Event event;
         while (this->pollEvent(event))
         {
